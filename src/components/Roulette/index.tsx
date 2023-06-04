@@ -50,7 +50,7 @@ const Roulette: React.FC = () => {
     <div className="h-96 flex justify-center flex-col items-center">
       <GradientCircle>
         <InnerArea>
-          {!started ? (
+          {started ? (
             <NoPurchase />
           ) : (
             <>
@@ -59,7 +59,7 @@ const Roulette: React.FC = () => {
           )}
         </InnerArea>
         {/* This is the area for needle and explosion, if started is true, this become activated 👍 */}
-        {started && (
+        {!started && (
           <InnerArea>
             <LightingImage />
             <Needle />

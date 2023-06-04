@@ -1,32 +1,44 @@
-import React from 'react'
-
-type ButtonProps = {
+import React, { useEffect, useState } from 'react'
+interface ButtonProps {
+  size: string
+  color: string
+  pending: boolean
+  disabled: boolean
   children?: React.ReactNode
-  onClick?: () => void
+  callback: () => Promise<void>
 }
 
 export const Button: React.FunctionComponent<ButtonProps> = ({
   children,
-  onClick = () => {}
+  color = 'green',
+  pending = false,
+  disabled = false,
+  size,
+  callback = () => new Promise(() => {})
 }: ButtonProps) => {
-  const baseClasses =
-    'border-2 outline-none focus:outline-none normal-case tracking-wide font-semibold rounded shadow-xl text-xs px-4 py-2'
-
-  const colourClasses =
-    'border-primary active:bg-primary-background text-primary bg-sec-background'
-
-  /**
-   * Render the button
-   */
-  return (
-    <button
-      className="
-      bg-green-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-500 
+  const [_pending, setPending] = useState<boolean>(false)
+  const className = `
+      bg-${color}-600 
+      mx-${size == 'md' ? 2 : 1}
+      px-${size == 'md' ? 3.5 : 2} 
+      py-${
+        size == 'md' ? 2.5 : 1
+      } text-sm font-semibold text-white shadow-sm hover:bg-${color}-500 
       focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2
-      focus-visible:outline-indigo-600 px-4 mx-2"
-      type="button"
-      onClick={() => onClick()}
-    >
+      focus-visible:outline-indigo-600
+      `
+  const handleClick = () => {
+    setPending(true)
+    callback().then(() => {
+      setPending(false)
+    })
+  }
+
+  useEffect(() => {
+    setPending(pending)
+  }, [pending])
+  return (
+    <button className={className} onClick={handleClick}>
       {children}
     </button>
   )
